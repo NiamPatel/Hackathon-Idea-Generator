@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hackathon Ideas</title>
+    <style>
+        body {
+            background-color: rgb(160,186, 189);
+        }
+        .active-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .active-filter {
+            background-color: #f2f2f2;
+            padding: 5px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .active-filter span {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hackathon Ideas</h1>
+    <form method="post" action="{{ url_for('filter_ideas') }}">
+        <label for="category">Select Category:</label>
+        <select name="category" id="category">
+            <option value="">All</option>
+            <option value="Medical">Medical</option>
+            <option value="Technology">Technology</option>
+            <option value="Environmental">Environmental</option>
+            <option value="Education">Education</option>
+            <option value="Arts">Arts</option>
+            <option value="Finance">Finance</option>
+            <option value="Health">Health</option>
+            <option value="Gaming">Gaming</option>
+            <option value="Food">Food</option>
+            <option value="Travel">Travel</option>
+        </select>
+        <br>
+        <label for="tag">Select Tag:</label>
+        <select name="tag" id="tag">
+            <option value="">All</option>
+            <option value="AI Project">AI Project</option>
+            <option value="Web Project">Web Project</option>
+            <option value="Data Science">Data Science</option>
+            <option value="IoT Project">IoT Project</option>
+            <option value="Virtual Reality">Virtual Reality</option>
+            <option value="Mobile App">Mobile App</option>
+            <option value="Robotics">Robotics</option>
+            <option value="Machine Learning">Machine Learning</option>
+            <option value="Sustainability">Sustainability</option>
+            <option value="Eco-Friendly">Eco-Friendly</option>
+            <option value="Renewable Energy">Renewable Energy</option>
+            <option value="Automation">Automation</option>
+            <option value="Health Monitoring">Health Monitoring</option>
+            <option value="Smart City">Smart City</option>
+            <option value="Climate Change">Climate Change</option>
+            <option value="Conservation">Conservation</option>
+            <option value="Personalized">Personalized</option>
+            <option value="Language Learning">Language Learning</option>
+            <option value="Social Impact">Social Impact</option>
+            <option value="Green Technology">Green Technology</option>
+        </select>
+        <br>
+        <input type="submit" value="Filter">
+    </form>
+
+    <!-- Display active filters here -->
+    <div class="active-filters">
+        {% for category in active_categories %}
+            <div class="active-filter">
+                Category: {{ category }}
+                <span onclick="removeFilter('category', '{{ category }}')">x</span>
+            </div>
+        {% endfor %}
+
+        {% for tag in active_tags %}
+            <div class="active-filter">
+                Tag: {{ tag }}
+                <span onclick="removeFilter('tag', '{{ tag }}')">x</span>
+            </div>
+        {% endfor %}
+    </div>
+
+    <ul>
+        {% if ideas %}
+            {% for idea in ideas %}
+                {% if (not category_filter or idea.category == category_filter) and
+                      (not tag_filter or tag_filter in idea.tags) %}
+                    <li>
+                        <strong>{{ idea.title }}</strong>
+                        <br>
+                        Category: {{ idea.category }}
+                        <br>
+                        Tags: {{ idea.tags|join(", ") }}
+                        <br>
+                        Description: {{ idea.description }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <li>No ideas found.</li>
+        {% endif %}
+    </ul>
+
+    <script>
+        // JavaScript to handle filter removal
+        function removeFilter(filterType, filterValue) {
+            // Get the form and the select element
+            const form = document.querySelector('form');
+            const selectElement = document.getElementById(filterType);
+
+            // Reset the corresponding select element
+            selectElement.value = '';
+
+            // Submit the form with the updated select values
+            form.submit();
+        }
+    </script>
+</body>
+</html>
